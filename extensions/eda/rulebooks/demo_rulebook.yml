@@ -20,7 +20,7 @@
   rules:
 
     - name: Restart nginx when Datadog fires a critical alert
-      condition: event.payload.alert_status == "Alert"
+      condition: event.payload.alert_type == "error"
       action:
         run_job_template:
           name: "Restart nginx"
@@ -32,7 +32,7 @@
               dd_alert_title: "{{ event.payload.alert_title }}"
 
     - name: Log recovery when Datadog resolves the alert
-      condition: event.payload.alert_status == "Recovered"
+      condition: event.payload.alert_type == "success"
       action:
         debug:
           msg: "Datadog confirmed recovery: {{ event.payload.alert_title }} on {{ event.payload.hostname }}"
