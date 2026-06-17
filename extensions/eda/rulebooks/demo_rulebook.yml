@@ -20,23 +20,19 @@
   rules:
 
     - name: Restart nginx when Datadog fires a critical alert
-      condition: >
-        event.payload.alert_transition == "Triggered" and
-        event.payload.alert_status == "Alert"
+      condition: event.payload.alert_status == "Alert"
       action:
         run_job_template:
           name: "Restart nginx"
           organization: "Default"
           job_args:
             extra_vars:
-              # Pass the Datadog alert context into the job for audit trail
-              dd_alert_id:    "{{ event.payload.alert_id }}"
+              dd_alert_id:    "{{ event.payload.id }}"
               dd_hostname:    "{{ event.payload.hostname }}"
               dd_alert_title: "{{ event.payload.alert_title }}"
 
     - name: Log recovery when Datadog resolves the alert
-      condition: >
-        event.payload.alert_transition == "Recovered"
+      condition: event.payload.alert_status == "Recovered"
       action:
         debug:
-          msg: "Datadog confirmed recovery for alert {{ event.payload.alert_id }}"
+          msg: "Datadog confirmed recovery: {{ event.payload.alert_title }} on {{ event.payload.hostname }}"
