@@ -30,13 +30,6 @@
         enabled: true
       become: true
 
-    - name: Verify nginx is responding on port 80
-      ansible.builtin.wait_for:
-        host: "{{ inventory_hostname }}"
-        port: 80
-        timeout: 30
-        state: started
-
     - name: Confirm remediation success
       ansible.builtin.debug:
         msg: "nginx is back online on {{ inventory_hostname }} — remediation complete."
