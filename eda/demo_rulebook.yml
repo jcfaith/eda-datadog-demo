@@ -1,0 +1,42 @@
+---
+# EDA Rulebook — Datadog + nginx auto-remediation demo
+# Upload this to AAP 2.6 EDA Controller under: EDA > Rulebooks
+# Then create a Rulebook Activation pointing at this rulebook.
+#
+# Datadog sends a webhook here when the nginx process monitor fires.
+# EDA matches the event and triggers the "Restart nginx" Job Template in AAP.
+
+- name: Datadog nginx remediation
+  hosts: all
+
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+        # In AAP 2.6 EDA Controller the port is managed by the platform.
+        # Leave port here for standalone ansible-rulebook usage.
+        # The webhook URL to give Datadog is shown in the Activation details page.
+
+  rules:
+
+    - name: Restart nginx when Datadog fires a critical alert
+      condition: >
+        event.payload.alert_transition == "Triggered" and
+        event.payload.alert_status == "Alert"
+      action:
+        run_job_template:
+          name: "Restart nginx"
+          organization: "Default"
+          job_args:
+            extra_vars:
+              # Pass the Datadog alert context into the job for audit trail
+              dd_alert_id:    "{{ event.payload.alert_id }}"
+              dd_hostname:    "{{ event.payload.hostname }}"
+              dd_alert_title: "{{ event.payload.alert_title }}"
+
+    - name: Log recovery when Datadog resolves the alert
+      condition: >
+        event.payload.alert_transition == "Recovered"
+      action:
+        debug:
+          msg: "Datadog confirmed recovery for alert {{ event.payload.alert_id }}"

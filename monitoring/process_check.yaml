@@ -1,0 +1,15 @@
+# /etc/datadog-agent/conf.d/process.d/conf.yaml
+# Datadog process check — detects nginx disappearing within ~15 seconds.
+# Faster than the HTTP synthetic check for live demo purposes.
+
+init_config:
+
+instances:
+  - name: nginx
+    search_string:
+      - "nginx: master process"
+    # Alert when the process count drops to 0
+    thresholds:
+      critical: [1, 1]    # min 1, max 1 master process must be running
+    collect_children: false
+    user: root

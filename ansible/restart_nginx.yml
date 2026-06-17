@@ -1,0 +1,42 @@
+---
+# AAP Job Template: "Restart nginx"
+# This is the remediation playbook triggered by EDA when Datadog fires.
+# The Job Template in AAP should reference this playbook.
+#
+# Extra vars passed in by EDA (for the audit trail):
+#   dd_alert_id, dd_hostname, dd_alert_title
+
+- name: Remediate nginx outage
+  hosts: demo_hosts
+  gather_facts: false
+
+  vars:
+    dd_alert_id:    "unknown"
+    dd_hostname:    "unknown"
+    dd_alert_title: "unknown"
+
+  tasks:
+
+    - name: Log remediation start
+      ansible.builtin.debug:
+        msg: >
+          EDA triggered remediation for Datadog alert '{{ dd_alert_id }}'
+          on host '{{ dd_hostname }}': {{ dd_alert_title }}
+
+    - name: Ensure nginx is started
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+      become: true
+
+    - name: Verify nginx is responding on port 80
+      ansible.builtin.wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 80
+        timeout: 30
+        state: started
+
+    - name: Confirm remediation success
+      ansible.builtin.debug:
+        msg: "nginx is back online on {{ inventory_hostname }} — remediation complete."

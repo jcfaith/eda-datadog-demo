@@ -1,0 +1,15 @@
+[Unit]
+Description=Demo Kill Service (EDA+Datadog demo sidecar)
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+ExecStart=/usr/bin/python3 /opt/demo/kill_service.py
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+# /etc/datadog-agent/datadog.yaml (relevant overrides)
+# Place this file at /etc/datadog-agent/datadog.yaml on the EC2 host
+# The Ansible setup playbook handles this automatically.
+
+api_key: "{{ DD_API_KEY }}"         # injected by Ansible vault
+site: "datadoghq.com"               # change to datadoghq.eu if EU org
+
+hostname: "eda-demo-host"           # shown in Datadog UI and Datadog alert payload
+tags:
+  - "env:demo"
+  - "app:nginx-demo"
+  - "team:ansible"
+
+logs_enabled: false
+apm_config:
+  enabled: false

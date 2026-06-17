@@ -1,0 +1,14 @@
+---
+# Inventory for the EDA + Datadog demo
+# Add this as a Source in AAP under the "EDA Demo" inventory.
+# Replace the placeholder values with your actual EC2 details.
+
+all:
+  children:
+    demo_hosts:
+      hosts:
+        eda-demo-host:
+          ansible_host: <EC2_PUBLIC_IP>       # replace with EC2 public IP or DNS
+          ansible_user: ec2-user              # Amazon Linux 2023 default
+          ansible_ssh_private_key_file: ~/.ssh/demo-key.pem   # or use AAP credential
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
