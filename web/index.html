@@ -3,102 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EDA + Datadog Demo App</title>
+  <title>EDA + Datadog Auto-Remediation</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0f1117;
+      background: #0a0c14;
       color: #e2e8f0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    /* ── Header ── */
     header {
-      background: #1a1d2e;
-      border-bottom: 1px solid #2d3148;
-      padding: 16px 32px;
+      background: #12152a;
+      border-bottom: 2px solid #1e2340;
+      padding: 20px 48px;
       display: flex;
       align-items: center;
-      gap: 16px;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      gap: 20px;
     }
 
     .logo-badge {
-      background: linear-gradient(135deg, #e00, #c00);
+      background: linear-gradient(135deg, #ee0000, #aa0000);
       color: white;
-      font-weight: 700;
-      font-size: 13px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
+      font-weight: 800;
+      font-size: 18px;
+      padding: 6px 16px;
+      border-radius: 6px;
+      letter-spacing: 1px;
     }
 
     .app-title {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 26px;
+      font-weight: 700;
       color: #f8fafc;
+      letter-spacing: 0.3px;
     }
 
-    .status-bar {
+    .status-pill {
       margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: #94a3b8;
+      gap: 10px;
+      background: #0d1f0d;
+      border: 2px solid #166534;
+      border-radius: 999px;
+      padding: 8px 20px;
     }
 
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       background: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
+      box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e44;
       animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e44; }
+      50%       { opacity: 0.7; box-shadow: 0 0 6px #22c55e; }
     }
 
-    .status-text { color: #22c55e; font-weight: 600; }
+    .status-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: #22c55e;
+      letter-spacing: 1px;
+    }
 
+    /* ── Main grid ── */
     main {
       flex: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      padding: 40px 48px;
-      max-width: 1200px;
-      margin: 0 auto;
+      grid-template-rows: auto auto;
+      gap: 28px;
+      padding: 36px 48px;
       width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
     }
 
     .card {
-      background: #1a1d2e;
-      border: 1px solid #2d3148;
-      border-radius: 12px;
-      padding: 28px;
+      background: #12152a;
+      border: 1px solid #1e2340;
+      border-radius: 16px;
+      padding: 32px;
     }
 
-    .card h2 {
-      font-size: 14px;
-      font-weight: 600;
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #64748b;
-      margin-bottom: 20px;
+      letter-spacing: 2px;
+      color: #475569;
+      margin-bottom: 24px;
     }
 
+    /* ── Metrics ── */
     .metric-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -106,141 +112,189 @@
     }
 
     .metric {
-      background: #0f1117;
-      border-radius: 8px;
-      padding: 16px;
-      border: 1px solid #1e2235;
+      background: #0a0c14;
+      border: 1px solid #1e2340;
+      border-radius: 12px;
+      padding: 20px 24px;
     }
 
-    .metric-label { font-size: 12px; color: #64748b; margin-bottom: 6px; }
-    .metric-value { font-size: 28px; font-weight: 700; color: #f8fafc; }
-    .metric-unit  { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .metric-label {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+      color: #f8fafc;
+    }
 
     .metric-value.green { color: #22c55e; }
-    .metric-value.blue  { color: #60a5fa; }
+    .metric-value.blue  { color: #38bdf8; }
 
-    .arch-diagram {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      grid-column: 1 / -1;
+    .metric-unit {
+      font-size: 14px;
+      color: #475569;
+      margin-top: 6px;
     }
 
-    .flow-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .flow-node {
-      background: #0f1117;
-      border: 1px solid #2d3148;
-      border-radius: 6px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .flow-node.active  { border-color: #22c55e; color: #22c55e; }
-    .flow-node.red     { border-color: #ef4444; color: #ef4444; }
-    .flow-node.dd      { border-color: #774aa4; color: #c084fc; }
-    .flow-node.aap     { border-color: #e00; color: #f87171; }
-
-    .flow-arrow { color: #475569; font-size: 18px; }
-
+    /* ── Kill card ── */
     .kill-card {
-      border-color: #3d1515;
-      background: #1a1010;
+      background: #130a0a;
+      border: 2px solid #3d1515;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 16px;
+      gap: 20px;
     }
 
-    .kill-card h2 { color: #ef4444; }
+    .kill-card .card-title { color: #ef4444; }
 
-    .kill-card p {
-      font-size: 14px;
+    .kill-desc {
+      font-size: 17px;
       color: #94a3b8;
-      max-width: 280px;
-      line-height: 1.6;
+      line-height: 1.7;
+      max-width: 320px;
     }
 
     .kill-btn {
       background: linear-gradient(135deg, #dc2626, #991b1b);
       color: white;
       border: none;
-      border-radius: 8px;
-      padding: 16px 40px;
-      font-size: 18px;
-      font-weight: 700;
+      border-radius: 12px;
+      padding: 22px 56px;
+      font-size: 26px;
+      font-weight: 800;
       cursor: pointer;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
       transition: all 0.15s;
-      box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.5), 0 4px 20px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 340px;
     }
 
     .kill-btn:hover {
       background: linear-gradient(135deg, #ef4444, #b91c1c);
-      box-shadow: 0 0 30px rgba(220, 38, 38, 0.6);
-      transform: scale(1.03);
+      box-shadow: 0 0 50px rgba(220, 38, 38, 0.7), 0 4px 20px rgba(0,0,0,0.4);
+      transform: scale(1.04);
     }
 
-    .kill-btn:active { transform: scale(0.98); }
+    .kill-btn:active { transform: scale(0.97); }
 
-    .warning-text {
-      font-size: 12px;
-      color: #64748b;
-    }
-
-    footer {
-      border-top: 1px solid #2d3148;
-      padding: 14px 32px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
+    .kill-hint {
+      font-size: 13px;
       color: #475569;
+      line-height: 1.6;
     }
 
-    .tech-badges {
+    /* ── Flow diagram ── */
+    .flow-card {
+      grid-column: 1 / -1;
+    }
+
+    .flow-row {
       display: flex;
-      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .flow-node {
+      background: #0a0c14;
+      border: 2px solid #1e2340;
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .flow-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .flow-node.green { border-color: #166534; color: #22c55e; background: #0d1f0d; }
+    .flow-node.dd    { border-color: #5b21b6; color: #a78bfa; background: #110e1f; }
+    .flow-node.aap   { border-color: #7f1d1d; color: #fca5a5; background: #1a0d0d; }
+
+    .flow-arrow {
+      color: #334155;
+      font-size: 26px;
+      padding: 0 6px;
+      flex-shrink: 0;
+      align-self: center;
+      margin-bottom: 24px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid #1e2340;
+      padding: 16px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-text {
+      font-size: 15px;
+      color: #334155;
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
     }
 
     .badge {
-      background: #1a1d2e;
-      border: 1px solid #2d3148;
-      border-radius: 4px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 600;
+      background: #12152a;
+      border: 1px solid #1e2340;
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 700;
       letter-spacing: 0.5px;
+      color: #64748b;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-area">
-    <div class="logo-badge">AAP</div>
-    <span class="app-title">nginx Demo App &mdash; Event-Driven Remediation</span>
-  </div>
-  <div class="status-bar">
+  <div class="logo-badge">AAP</div>
+  <span class="app-title">Event-Driven Auto-Remediation &mdash; nginx on AWS EC2</span>
+  <div class="status-pill">
     <div class="status-dot"></div>
-    <span class="status-text">RUNNING</span>
-    <span>| nginx/1.24 on AWS EC2</span>
+    <span class="status-label">RUNNING</span>
   </div>
 </header>
 
 <main>
 
-  <!-- Live Metrics -->
+  <!-- Metrics -->
   <div class="card">
-    <h2>Service Health</h2>
+    <div class="card-title">Service Health</div>
     <div class="metric-grid">
       <div class="metric">
         <div class="metric-label">Uptime</div>
@@ -255,11 +309,11 @@
       <div class="metric">
         <div class="metric-label">Requests Served</div>
         <div class="metric-value blue" id="req-count">1</div>
-        <div class="metric-unit">total</div>
+        <div class="metric-unit">this session</div>
       </div>
       <div class="metric">
         <div class="metric-label">Response Time</div>
-        <div class="metric-value blue" id="resp-time">—</div>
+        <div class="metric-value blue" id="resp-time">&mdash;</div>
         <div class="metric-unit">ms</div>
       </div>
     </div>
@@ -267,43 +321,76 @@
 
   <!-- Kill Button -->
   <div class="card kill-card">
-    <h2>Demo Control</h2>
-    <p>Click the button to simulate an application failure. Datadog will detect the outage and EDA will auto-remediate.</p>
+    <div class="card-title">Simulate Failure</div>
+    <p class="kill-desc">Stops the nginx process via systemd. Datadog detects the outage and EDA automatically remediates.</p>
     <form method="POST" action="/kill" onsubmit="return confirmKill()">
-      <button class="kill-btn" type="submit">&#9760; KILL APP</button>
+      <button class="kill-btn" type="submit">&#9760;&nbsp; KILL APP</button>
     </form>
-    <span class="warning-text">Triggers: nginx stop &rarr; Datadog alert &rarr; EDA &rarr; AAP job</span>
+    <span class="kill-hint">
+      nginx stops &rarr; Datadog alert &rarr; EDA webhook &rarr; AAP job &rarr; nginx restored
+    </span>
   </div>
 
-  <!-- Architecture Flow -->
-  <div class="card" style="grid-column: 1 / -1;">
-    <h2>Remediation Flow</h2>
-    <div class="arch-diagram">
-      <div class="flow-row">
-        <div class="flow-node active">nginx (EC2)</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node dd">Datadog Agent</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node dd">Process Monitor</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node dd">Datadog Webhook</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node aap">EDA Controller (AAP)</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node aap">Rulebook Activation</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node aap">AAP Job Template</div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-node active">nginx restarted &#10003;</div>
+  <!-- Flow Diagram -->
+  <div class="card flow-card">
+    <div class="card-title">Remediation Flow</div>
+    <div class="flow-row">
+
+      <div class="flow-step">
+        <div class="flow-node green">nginx (EC2)</div>
+        <div class="flow-label">App</div>
       </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node dd">Datadog Agent</div>
+        <div class="flow-label">Process Check</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node dd">Datadog Monitor</div>
+        <div class="flow-label">Alert Fires</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node dd">Webhook POST</div>
+        <div class="flow-label">Event Stream</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node aap">EDA Controller</div>
+        <div class="flow-label">AAP 2.6</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node aap">Rulebook Match</div>
+        <div class="flow-label">alert_type == error</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node aap">Job Template</div>
+        <div class="flow-label">Restart nginx</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+
+      <div class="flow-step">
+        <div class="flow-node green">nginx Restored &#10003;</div>
+        <div class="flow-label">Remediated</div>
+      </div>
+
     </div>
   </div>
 
 </main>
 
 <footer>
-  <div>Ansible Automation Platform 2.6 &bull; Event-Driven Ansible &bull; Datadog</div>
-  <div class="tech-badges">
+  <span class="footer-text">Ansible Automation Platform 2.6 &nbsp;&bull;&nbsp; Event-Driven Ansible &nbsp;&bull;&nbsp; Datadog</span>
+  <div class="badges">
     <span class="badge">AWS EC2</span>
     <span class="badge">NGINX</span>
     <span class="badge">DATADOG</span>
@@ -312,24 +399,21 @@
 </footer>
 
 <script>
-  // Uptime counter
   let seconds = 0;
   setInterval(() => {
     seconds++;
     document.getElementById('uptime').textContent = seconds;
   }, 1000);
 
-  // Request counter
   let reqs = parseInt(localStorage.getItem('reqs') || '1');
   reqs++;
   localStorage.setItem('reqs', reqs);
   document.getElementById('req-count').textContent = reqs;
 
-  // Simulated response time
   document.getElementById('resp-time').textContent = Math.floor(Math.random() * 8 + 2);
 
   function confirmKill() {
-    return confirm('This will stop nginx and take the app offline. Datadog will detect the failure and EDA will remediate. Continue?');
+    return confirm('This will stop nginx and take the app offline.\nDatadog will detect the failure and EDA will auto-remediate.\n\nContinue?');
   }
 </script>
 
