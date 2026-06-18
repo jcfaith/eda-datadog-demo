@@ -3,13 +3,13 @@
 # Faster than the HTTP synthetic check for live demo purposes.
 
 init_config:
+  min_collection_interval: 10
 
 instances:
   - name: nginx
     search_string:
       - "nginx"
-    # Alert when the process count drops to 0
     thresholds:
-      critical: [1, 1]    # min 1, max 1 master process must be running
+      critical: [1, 1]
     collect_children: false
     user: root
