@@ -422,9 +422,7 @@
   <div class="card kill-card">
     <div class="card-title">Simulate Failure</div>
     <p class="kill-desc">Stops the nginx process via systemd. Datadog detects the outage and EDA automatically remediates.</p>
-    <form method="POST" action="/kill" onsubmit="return confirmKill()">
-      <button class="kill-btn" type="submit">&#9760;&nbsp; KILL APP</button>
-    </form>
+    <button class="kill-btn" type="button" onclick="killApp()">&#9760;&nbsp; KILL APP</button>
     <span class="kill-hint">
       nginx stops &rarr; Datadog alert &rarr; EDA webhook &rarr; AAP job &rarr; nginx restored
     </span>
@@ -456,8 +454,9 @@
 
   document.getElementById('resp-time').textContent = Math.floor(Math.random() * 8 + 2);
 
-  function confirmKill() {
-    return confirm('This will stop nginx and take the app offline.\nDatadog will detect the failure and EDA will auto-remediate.\n\nContinue?');
+  function killApp() {
+    if (!confirm('This will stop nginx and take the app offline.\nDatadog will detect the failure and EDA will auto-remediate.\n\nContinue?')) return;
+    fetch('/kill', { method: 'POST' }).catch(() => {});
   }
 </script>
 
