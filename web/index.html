@@ -198,39 +198,44 @@
       grid-column: 1 / -1;
     }
 
+    .flow-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
     .flow-row {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding: 8px 0;
     }
 
     .flow-step {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
     }
 
     .flow-node {
       background: #0a0c14;
       border: 2px solid #1e2340;
       border-radius: 10px;
-      padding: 14px 22px;
-      font-size: 15px;
+      padding: 12px 10px;
+      font-size: 14px;
       font-weight: 600;
       white-space: nowrap;
       text-align: center;
+      width: 100%;
     }
 
     .flow-label {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: #334155;
       font-weight: 600;
     }
@@ -241,11 +246,20 @@
 
     .flow-arrow {
       color: #334155;
-      font-size: 26px;
-      padding: 0 6px;
+      font-size: 22px;
+      padding: 0 4px;
       flex-shrink: 0;
       align-self: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+    }
+
+    .flow-connector {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: calc(12.5% - 10px);
+      color: #334155;
+      font-size: 22px;
+      line-height: 1;
     }
 
     /* ── Footer ── */
@@ -334,53 +348,55 @@
   <!-- Flow Diagram -->
   <div class="card flow-card">
     <div class="card-title">Remediation Flow</div>
-    <div class="flow-row">
+    <div class="flow-wrap">
 
-      <div class="flow-step">
-        <div class="flow-node green">nginx (EC2)</div>
-        <div class="flow-label">App</div>
+      <!-- Row 1: App → Datadog -->
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-node green">nginx (EC2)</div>
+          <div class="flow-label">App</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="flow-node dd">Datadog Agent</div>
+          <div class="flow-label">Process Check</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="flow-node dd">Datadog Monitor</div>
+          <div class="flow-label">Alert Fires</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="flow-node dd">Webhook POST</div>
+          <div class="flow-label">Event Stream</div>
+        </div>
       </div>
-      <div class="flow-arrow">&#8594;</div>
 
-      <div class="flow-step">
-        <div class="flow-node dd">Datadog Agent</div>
-        <div class="flow-label">Process Check</div>
-      </div>
-      <div class="flow-arrow">&#8594;</div>
+      <!-- Down connector aligned to right side of row 1 -->
+      <div class="flow-connector">&#8595;</div>
 
-      <div class="flow-step">
-        <div class="flow-node dd">Datadog Monitor</div>
-        <div class="flow-label">Alert Fires</div>
-      </div>
-      <div class="flow-arrow">&#8594;</div>
-
-      <div class="flow-step">
-        <div class="flow-node dd">Webhook POST</div>
-        <div class="flow-label">Event Stream</div>
-      </div>
-      <div class="flow-arrow">&#8594;</div>
-
-      <div class="flow-step">
-        <div class="flow-node aap">EDA Controller</div>
-        <div class="flow-label">AAP 2.6</div>
-      </div>
-      <div class="flow-arrow">&#8594;</div>
-
-      <div class="flow-step">
-        <div class="flow-node aap">Rulebook Match</div>
-        <div class="flow-label">alert_type == error</div>
-      </div>
-      <div class="flow-arrow">&#8594;</div>
-
-      <div class="flow-step">
-        <div class="flow-node aap">Job Template</div>
-        <div class="flow-label">Restart nginx</div>
-      </div>
-      <div class="flow-arrow">&#8594;</div>
-
-      <div class="flow-step">
-        <div class="flow-node green">nginx Restored &#10003;</div>
-        <div class="flow-label">Remediated</div>
+      <!-- Row 2: EDA → Remediated (right to left visually continues the story) -->
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-node green">nginx Restored &#10003;</div>
+          <div class="flow-label">Remediated</div>
+        </div>
+        <div class="flow-arrow">&#8592;</div>
+        <div class="flow-step">
+          <div class="flow-node aap">Job Template</div>
+          <div class="flow-label">Restart nginx</div>
+        </div>
+        <div class="flow-arrow">&#8592;</div>
+        <div class="flow-step">
+          <div class="flow-node aap">Rulebook Match</div>
+          <div class="flow-label">alert_type == error</div>
+        </div>
+        <div class="flow-arrow">&#8592;</div>
+        <div class="flow-step">
+          <div class="flow-node aap">EDA Controller</div>
+          <div class="flow-label">AAP 2.6</div>
+        </div>
       </div>
 
     </div>
