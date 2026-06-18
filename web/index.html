@@ -309,45 +309,6 @@
 
 <main>
 
-  <!-- Metrics -->
-  <div class="card">
-    <div class="card-title">Service Health</div>
-    <div class="metric-grid">
-      <div class="metric">
-        <div class="metric-label">Uptime</div>
-        <div class="metric-value green" id="uptime">0</div>
-        <div class="metric-unit">seconds</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">HTTP Status</div>
-        <div class="metric-value green">200</div>
-        <div class="metric-unit">OK</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Requests Served</div>
-        <div class="metric-value blue" id="req-count">1</div>
-        <div class="metric-unit">this session</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Response Time</div>
-        <div class="metric-value blue" id="resp-time">&mdash;</div>
-        <div class="metric-unit">ms</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Kill Button -->
-  <div class="card kill-card">
-    <div class="card-title">Simulate Failure</div>
-    <p class="kill-desc">Stops the nginx process via systemd. Datadog detects the outage and EDA automatically remediates.</p>
-    <form method="POST" action="/kill" onsubmit="return confirmKill()">
-      <button class="kill-btn" type="submit">&#9760;&nbsp; KILL APP</button>
-    </form>
-    <span class="kill-hint">
-      nginx stops &rarr; Datadog alert &rarr; EDA webhook &rarr; AAP job &rarr; nginx restored
-    </span>
-  </div>
-
   <!-- Flow Diagram -->
   <div class="card flow-card">
     <div class="card-title">Remediation Flow</div>
@@ -403,6 +364,45 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="card">
+    <div class="card-title">Service Health</div>
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="metric-label">Uptime</div>
+        <div class="metric-value green" id="uptime">0</div>
+        <div class="metric-unit">seconds</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">HTTP Status</div>
+        <div class="metric-value green">200</div>
+        <div class="metric-unit">OK</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Requests Served</div>
+        <div class="metric-value blue" id="req-count">1</div>
+        <div class="metric-unit">this session</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Response Time</div>
+        <div class="metric-value blue" id="resp-time">&mdash;</div>
+        <div class="metric-unit">ms</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kill Button -->
+  <div class="card kill-card">
+    <div class="card-title">Simulate Failure</div>
+    <p class="kill-desc">Stops the nginx process via systemd. Datadog detects the outage and EDA automatically remediates.</p>
+    <form method="POST" action="/kill" onsubmit="return confirmKill()">
+      <button class="kill-btn" type="submit">&#9760;&nbsp; KILL APP</button>
+    </form>
+    <span class="kill-hint">
+      nginx stops &rarr; Datadog alert &rarr; EDA webhook &rarr; AAP job &rarr; nginx restored
+    </span>
   </div>
 
 </main>
