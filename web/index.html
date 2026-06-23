@@ -372,16 +372,6 @@
         <div class="metric-value green">200</div>
         <div class="metric-unit">OK</div>
       </div>
-      <div class="metric">
-        <div class="metric-label">Requests Served</div>
-        <div class="metric-value blue" id="req-count">1</div>
-        <div class="metric-unit">this session</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Response Time</div>
-        <div class="metric-value blue" id="resp-time">&mdash;</div>
-        <div class="metric-unit">ms</div>
-      </div>
     </div>
   </div>
 
@@ -407,13 +397,6 @@
     const s = String(seconds % 60).padStart(2, '0');
     document.getElementById('uptime').textContent = h + ':' + m + ':' + s;
   }, 1000);
-
-  let reqs = parseInt(localStorage.getItem('reqs') || '1');
-  reqs++;
-  localStorage.setItem('reqs', reqs);
-  document.getElementById('req-count').textContent = reqs;
-
-  document.getElementById('resp-time').textContent = Math.floor(Math.random() * 8 + 2);
 
   function killApp() {
     if (!confirm('This will stop nginx and take the app offline.\nDatadog will detect the failure and EDA will auto-remediate.\n\nContinue?')) return;
