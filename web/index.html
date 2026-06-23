@@ -364,8 +364,8 @@
     <div class="metric-grid">
       <div class="metric">
         <div class="metric-label">Uptime</div>
-        <div class="metric-value green" id="uptime">0</div>
-        <div class="metric-unit">seconds</div>
+        <div class="metric-value green" id="uptime" style="font-size:36px">00:00:00</div>
+        <div class="metric-unit">hh:mm:ss</div>
       </div>
       <div class="metric">
         <div class="metric-label">HTTP Status</div>
@@ -402,7 +402,10 @@
   let seconds = 0;
   setInterval(() => {
     seconds++;
-    document.getElementById('uptime').textContent = seconds;
+    const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    document.getElementById('uptime').textContent = h + ':' + m + ':' + s;
   }, 1000);
 
   let reqs = parseInt(localStorage.getItem('reqs') || '1');
