@@ -9,11 +9,12 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { height: 100%; overflow: hidden; }
+
     body {
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       background: #0a0c14;
       color: #e2e8f0;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -22,7 +23,7 @@
     header {
       background: #12152a;
       border-bottom: 2px solid #1e2340;
-      padding: 20px 48px;
+      padding: 10px 48px;
       display: flex;
       align-items: center;
       gap: 20px;
@@ -58,7 +59,7 @@
     }
 
     .app-title {
-      font-size: 26px;
+      font-size: 20px;
       font-weight: 700;
       color: #f8fafc;
       letter-spacing: 0.3px;
@@ -102,53 +103,55 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: auto auto;
-      gap: 28px;
-      padding: 36px 48px;
+      gap: 10px;
+      padding: 10px 48px;
       width: 100%;
       max-width: 1500px;
       margin: 0 auto;
+      min-height: 0;
+      grid-template-rows: auto 1fr;
     }
 
     .card {
       background: #1a1e38;
       border: 1px solid #2a3060;
       border-radius: 16px;
-      padding: 32px;
+      padding: 16px 20px;
     }
 
     .card-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: #b8c6d8;
-      margin-bottom: 24px;
+      margin-bottom: 14px;
     }
 
     /* ── Metrics ── */
     .metric-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 10px;
     }
 
     .metric {
       background: #0f1226;
       border: 1px solid #2a3060;
       border-radius: 12px;
-      padding: 20px 24px;
+      padding: 12px 16px;
     }
 
     .metric-label {
-      font-size: 14px;
+      font-size: 12px;
       color: #a0b4d4;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .metric-value {
-      font-size: 48px;
+      font-size: 30px;
       font-weight: 800;
       line-height: 1;
       color: #f8fafc;
@@ -172,16 +175,16 @@
       align-items: center;
       justify-content: flex-start;
       text-align: center;
-      gap: 20px;
+      gap: 12px;
     }
 
     .kill-card .card-title { color: #ef4444; align-self: flex-start; }
     .flow-card .card-title { color: #f1f5f9; font-size: 15px; }
 
     .kill-desc {
-      font-size: 17px;
+      font-size: 14px;
       color: #b8c6d8;
-      line-height: 1.7;
+      line-height: 1.5;
       max-width: 320px;
     }
 
@@ -190,8 +193,8 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 14px 40px;
-      font-size: 20px;
+      padding: 10px 32px;
+      font-size: 18px;
       font-weight: 800;
       font-family: inherit;
       cursor: pointer;
@@ -211,10 +214,10 @@
     .kill-btn:active { transform: scale(0.97); }
 
     .kill-hint {
-      font-size: 17px;
+      font-size: 13px;
       font-weight: 600;
       color: #b8c6d8;
-      line-height: 1.8;
+      line-height: 1.5;
       letter-spacing: 0.2px;
     }
 
@@ -226,7 +229,7 @@
     .flow-wrap {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 6px;
     }
 
     .flow-row {
@@ -249,8 +252,8 @@
       background: #0a0c14;
       border: 2px solid #2a3060;
       border-radius: 10px;
-      padding: 12px 10px;
-      font-size: 15px;
+      padding: 8px 10px;
+      font-size: 13px;
       font-weight: 700;
       white-space: nowrap;
       text-align: center;
@@ -271,11 +274,11 @@
 
     .flow-arrow {
       color: #7c8db5;
-      font-size: 24px;
+      font-size: 20px;
       padding: 0 4px;
       flex-shrink: 0;
       align-self: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .flow-connector {
@@ -364,7 +367,7 @@
     <div class="metric-grid">
       <div class="metric">
         <div class="metric-label">Uptime</div>
-        <div class="metric-value green" id="uptime" style="font-size:36px">00:00:00</div>
+        <div class="metric-value green" id="uptime">00:00:00</div>
         <div class="metric-unit">hh:mm:ss</div>
       </div>
       <div class="metric">
@@ -372,27 +375,15 @@
         <div class="metric-value green">200</div>
         <div class="metric-unit">OK</div>
       </div>
-      <div class="metric">
-        <div class="metric-label">Requests Served</div>
-        <div class="metric-value blue" id="req-count">1</div>
-        <div class="metric-unit">this session</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Response Time</div>
-        <div class="metric-value blue" id="resp-time">&mdash;</div>
-        <div class="metric-unit">ms</div>
-      </div>
     </div>
   </div>
 
   <!-- Kill Button -->
   <div class="card kill-card">
     <div class="card-title">Simulate Failure</div>
-    <p class="kill-desc">Stops the nginx process via systemd. Datadog detects the outage and EDA automatically remediates.</p>
+    <p class="kill-desc">Stops nginx via systemd. Datadog detects it, EDA remediates.</p>
     <button class="kill-btn" type="button" onclick="killApp()">&#9760;&nbsp; KILL APP</button>
-    <span class="kill-hint">
-      nginx stops &rarr; Datadog alert &rarr; EDA webhook &rarr; AAP job &rarr; nginx restored
-    </span>
+    <span class="kill-hint">nginx &rarr; Datadog &rarr; EDA &rarr; AAP &rarr; restored</span>
   </div>
 
 </main>
@@ -407,13 +398,6 @@
     const s = String(seconds % 60).padStart(2, '0');
     document.getElementById('uptime').textContent = h + ':' + m + ':' + s;
   }, 1000);
-
-  let reqs = parseInt(localStorage.getItem('reqs') || '1');
-  reqs++;
-  localStorage.setItem('reqs', reqs);
-  document.getElementById('req-count').textContent = reqs;
-
-  document.getElementById('resp-time').textContent = Math.floor(Math.random() * 8 + 2);
 
   function killApp() {
     if (!confirm('This will stop nginx and take the app offline.\nDatadog will detect the failure and EDA will auto-remediate.\n\nContinue?')) return;
